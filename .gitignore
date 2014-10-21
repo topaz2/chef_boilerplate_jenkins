@@ -1,5 +1,6 @@
 .vagrant
 /cookbooks
+/coverage
 
 # Bundler
 bin/*
@@ -7,3 +8,6 @@ bin/*
 
 .kitchen/
 .kitchen.local.yml
+
+Berksfile.lock
+Gemfile.lock
