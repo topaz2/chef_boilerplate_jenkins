@@ -84,3 +84,11 @@ end
 ).each do |p|
   jenkins_plugin p
 end
+
+template "#{node[:apache][:dir]}/sites-available/jenkins.conf" do
+  source 'apache2/jenkins.conf.erb'
+  notifies :restart, 'service[apache2]'
+end
+apache_site 'jenkins' do
+  enable true
+end
