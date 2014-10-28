@@ -1,5 +1,7 @@
 #!/bin/bash -ex
 
+export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+
 # Clear previous build files
 rm -rf boilerplate-master master.zip
 
