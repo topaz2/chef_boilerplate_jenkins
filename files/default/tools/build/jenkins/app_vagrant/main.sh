@@ -4,4 +4,4 @@
 # @see https://github.com/berkshelf/vagrant-berkshelf/issues/212
 export PATH='/opt/chefdk/bin:'$PATH
 
-vagrant up
+vagrant up default
