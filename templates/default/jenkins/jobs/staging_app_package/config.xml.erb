@@ -13,6 +13,15 @@
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>ENVIRONMENT</name>
+          <description></description>
+          <defaultValue>development</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
   </properties>
   <scm class="hudson.plugins.git.GitSCM">
     <configVersion>2</configVersion>
@@ -38,10 +47,13 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>cp tools/build/app/cakephp/composer.json composer.json
-composer update
-tar cjf /home/ncadmin/archives/app-${BUILD_ID}.tar.bz .
-cp /home/ncadmin/archives/app-${BUILD_ID}.tar.bz /home/ncadmin/archives/app-latest.tar.bz </command>
+      <command>/usr/local/bin/tools/build/jenkins/app_package/pre.sh</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>/usr/local/bin/tools/build/jenkins/app_package/main.sh</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>/usr/local/bin/tools/build/jenkins/app_package/post.sh</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>
