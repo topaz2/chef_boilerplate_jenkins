@@ -18,8 +18,4 @@ else
   berks install -e development
 fi
 
-vagrant plugin install vagrant-berkshelf
-vagrant plugin install vagrant-hostmanager
-vagrant plugin install vagrant-omnibus
-vagrant plugin install vagrant-cachier
 vagrant destroy --force
