@@ -29,9 +29,19 @@ template '/etc/default/jenkins' do
   notifies :restart, 'service[jenkins]'
 end
 
+# Setup apache2
+template "#{node[:apache][:dir]}/sites-available/jenkins.conf" do
+  source 'apache2/jenkins.conf.erb'
+end
+apache_site 'jenkins' do
+  enable true
+  notifies :reload, 'service[apache2]', :immediately
+end
+
 chef_gem 'chef-helpers'
 require 'chef-helpers'
 
+# Setup jobs
 jobs = []
 %w(
   development staging production
@@ -83,12 +93,4 @@ end
   scm-api ssh-credentials role-strategy throttle-concurrents
 ).each do |p|
   jenkins_plugin p
-end
-
-template "#{node[:apache][:dir]}/sites-available/jenkins.conf" do
-  source 'apache2/jenkins.conf.erb'
-  notifies :restart, 'service[apache2]'
-end
-apache_site 'jenkins' do
-  enable true
 end
