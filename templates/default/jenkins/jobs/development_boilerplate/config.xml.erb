@@ -13,6 +13,19 @@
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
+    <hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+      <maxConcurrentPerNode>1</maxConcurrentPerNode>
+      <maxConcurrentTotal>1</maxConcurrentTotal>
+      <categories>
+        <string>vagrant</string>
+      </categories>
+      <throttleEnabled>true</throttleEnabled>
+      <throttleOption>project</throttleOption>
+      <matrixOptions>
+        <throttleMatrixBuilds>true</throttleMatrixBuilds>
+        <throttleMatrixConfigurations>true</throttleMatrixConfigurations>
+      </matrixOptions>
+    </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
   </properties>
   <scm class="hudson.plugins.git.GitSCM">
     <configVersion>2</configVersion>
@@ -41,23 +54,6 @@
     <com.cloudbees.jenkins.GitHubPushTrigger>
       <spec></spec>
     </com.cloudbees.jenkins.GitHubPushTrigger>
-    <org.jenkinsci.plugins.ghprb.GhprbTrigger>
-      <spec>*/5 * * * *</spec>
-      <adminlist></adminlist>
-      <orgslist></orgslist>
-      <cron>*/5 * * * *</cron>
-      <triggerPhrase></triggerPhrase>
-      <onlyTriggerPhrase>false</onlyTriggerPhrase>
-      <useGitHubHooks>true</useGitHubHooks>
-      <permitAll>false</permitAll>
-      <whitelist></whitelist>
-      <autoCloseFailedPullRequests>false</autoCloseFailedPullRequests>
-      <whiteListTargetBranches>
-        <org.jenkinsci.plugins.ghprb.GhprbBranch>
-          <branch></branch>
-        </org.jenkinsci.plugins.ghprb.GhprbBranch>
-      </whiteListTargetBranches>
-    </org.jenkinsci.plugins.ghprb.GhprbTrigger>
     <hudson.triggers.SCMTrigger>
       <spec>H/5 * * * *</spec>
       <ignorePostCommitHooks>false</ignorePostCommitHooks>
