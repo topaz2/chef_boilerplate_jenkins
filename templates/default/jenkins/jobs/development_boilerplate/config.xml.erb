@@ -4,15 +4,6 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <hudson.model.ParametersDefinitionProperty>
-      <parameterDefinitions>
-        <hudson.model.BooleanParameterDefinition>
-          <name>UPGRADE_DEPENDENCIES</name>
-          <description></description>
-          <defaultValue>true</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-      </parameterDefinitions>
-    </hudson.model.ParametersDefinitionProperty>
     <hudson.plugins.throttleconcurrents.ThrottleJobProperty>
       <maxConcurrentPerNode>1</maxConcurrentPerNode>
       <maxConcurrentTotal>1</maxConcurrentTotal>
@@ -26,12 +17,21 @@
         <throttleMatrixConfigurations>true</throttleMatrixConfigurations>
       </matrixOptions>
     </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.BooleanParameterDefinition>
+          <name>UPGRADE_DEPENDENCIES</name>
+          <description></description>
+          <defaultValue>true</defaultValue>
+        </hudson.model.BooleanParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
   </properties>
   <scm class="hudson.plugins.git.GitSCM">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url><%= node[:boilerplate][:app][:repo][:uri] %></url>
+        <url>https://github.com/topaz2/boilerplate.git</url>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>
@@ -48,9 +48,6 @@
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <triggers>
-    <hudson.triggers.TimerTrigger>
-      <spec>@midnight</spec>
-    </hudson.triggers.TimerTrigger>
     <com.cloudbees.jenkins.GitHubPushTrigger>
       <spec></spec>
     </com.cloudbees.jenkins.GitHubPushTrigger>
@@ -58,6 +55,9 @@
       <spec>H/5 * * * *</spec>
       <ignorePostCommitHooks>false</ignorePostCommitHooks>
     </hudson.triggers.SCMTrigger>
+    <hudson.triggers.TimerTrigger>
+      <spec>@midnight</spec>
+    </hudson.triggers.TimerTrigger>
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <axes>
@@ -75,12 +75,19 @@
     <hudson.tasks.Shell>
       <command>/usr/local/bin/tools/build/jenkins/boilerplate/main.sh</command>
     </hudson.tasks.Shell>
-    <hudson.tasks.Shell>
-      <command>/usr/local/bin/tools/build/jenkins/boilerplate/post.sh</command>
-    </hudson.tasks.Shell>
   </builders>
   <% if node[:boilerplate_jenkins][:mail][:recipients] %>
   <publishers>
+    <org.jenkinsci.plugins.postbuildscript.PostBuildScript>
+      <genericScriptFileList>
+        <org.jenkinsci.plugins.postbuildscript.GenericScript>
+          <filePath>/usr/local/bin/tools/build/jenkins/boilerplate/post.sh</filePath>
+        </org.jenkinsci.plugins.postbuildscript.GenericScript>
+      </genericScriptFileList>
+      <scriptOnlyIfSuccess>false</scriptOnlyIfSuccess>
+      <scriptOnlyIfFailure>false</scriptOnlyIfFailure>
+      <executeOn>MATRIX</executeOn>
+    </org.jenkinsci.plugins.postbuildscript.PostBuildScript>
     <hudson.tasks.Mailer>
       <recipients><%= node[:boilerplate_jenkins][:mail][:recipients] %></recipients>
       <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>

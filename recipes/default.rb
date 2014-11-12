@@ -71,15 +71,25 @@ jobs.each do |job|
   end
 end
 
-template "#{node[:jenkins][:master][:home]}/config.xml" do
-  source 'jenkins/config.xml.erb'
-  notifies :restart, 'service[jenkins]'
+%w(
+  config.xml
+  jenkins.model.JenkinsLocationConfiguration.xml
+  hudson.plugins.throttleconcurrents.ThrottleJobProperty.xml
+).each do |tpl|
+  template "#{node[:jenkins][:master][:home]}/#{tpl}" do
+    source "jenkins/#{tpl}.erb"
+    notifies :restart, 'service[jenkins]'
+  end
 end
+# template "#{node[:jenkins][:master][:home]}/config.xml" do
+#   source 'jenkins/config.xml.erb'
+#   notifies :restart, 'service[jenkins]'
+# end
 
-template "#{node[:jenkins][:master][:home]}/jenkins.model.JenkinsLocationConfiguration.xml" do
-  source 'jenkins/jenkins.model.JenkinsLocationConfiguration.xml.erb'
-  notifies :restart, 'service[jenkins]'
-end
+# template "#{node[:jenkins][:master][:home]}/jenkins.model.JenkinsLocationConfiguration.xml" do
+#   source 'jenkins/jenkins.model.JenkinsLocationConfiguration.xml.erb'
+#   notifies :restart, 'service[jenkins]'
+# end
 
 remote_directory '/usr/local/bin/tools/build/jenkins' do
   files_mode 0755
@@ -90,7 +100,7 @@ end
   ansicolor anything-goes-formatter bulk-builder build-pipeline-plugin build-user-vars-plugin
   credentials extra-columns
   git git-client git-parameter github github-api ghprb jobConfigHistory
-  scm-api ssh-credentials role-strategy throttle-concurrents
+  postbuildscript scm-api ssh-credentials role-strategy throttle-concurrents
 ).each do |p|
   jenkins_plugin p
 end

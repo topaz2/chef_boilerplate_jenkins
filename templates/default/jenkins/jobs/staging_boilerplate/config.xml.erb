@@ -4,6 +4,19 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
+    <hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+      <maxConcurrentPerNode>1</maxConcurrentPerNode>
+      <maxConcurrentTotal>1</maxConcurrentTotal>
+      <categories>
+        <string>vagrant</string>
+      </categories>
+      <throttleEnabled>true</throttleEnabled>
+      <throttleOption>project</throttleOption>
+      <matrixOptions>
+        <throttleMatrixBuilds>true</throttleMatrixBuilds>
+        <throttleMatrixConfigurations>true</throttleMatrixConfigurations>
+      </matrixOptions>
+    </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.BooleanParameterDefinition>
@@ -18,7 +31,7 @@
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url><%= node[:boilerplate][:app][:repo][:uri] %></url>
+        <url>https://github.com/topaz2/boilerplate.git</url>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>
@@ -62,12 +75,19 @@
     <hudson.tasks.Shell>
       <command>/usr/local/bin/tools/build/jenkins/boilerplate/main.sh</command>
     </hudson.tasks.Shell>
-    <hudson.tasks.Shell>
-      <command>/usr/local/bin/tools/build/jenkins/boilerplate/post.sh</command>
-    </hudson.tasks.Shell>
   </builders>
   <% if node[:boilerplate_jenkins][:mail][:recipients] %>
   <publishers>
+    <org.jenkinsci.plugins.postbuildscript.PostBuildScript>
+      <genericScriptFileList>
+        <org.jenkinsci.plugins.postbuildscript.GenericScript>
+          <filePath>/usr/local/bin/tools/build/jenkins/boilerplate/post.sh</filePath>
+        </org.jenkinsci.plugins.postbuildscript.GenericScript>
+      </genericScriptFileList>
+      <scriptOnlyIfSuccess>false</scriptOnlyIfSuccess>
+      <scriptOnlyIfFailure>false</scriptOnlyIfFailure>
+      <executeOn>MATRIX</executeOn>
+    </org.jenkinsci.plugins.postbuildscript.PostBuildScript>
     <hudson.tasks.Mailer>
       <recipients><%= node[:boilerplate_jenkins][:mail][:recipients] %></recipients>
       <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
